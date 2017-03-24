@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <!-- The jQuery library is a prerequisite for all jqSuite products -->
+    <script type="text/ecmascript" src="/static/js/jquery.min.js"></script> 
+    <!-- This is the Javascript file of jqGrid -->   
+    <script type="text/ecmascript" src="/static/js/jquery.jqGrid.min.js"></script>
+    <!-- This is the localization file of the grid controlling messages, labels, etc.
+    <!-- We support more than 40 localizations -->
+    <script type="text/ecmascript" src="/static/i18n/grid.locale-cn.js"></script>
+    <!-- A link to a jQuery UI ThemeRoller theme, more than 22 built-in and many more custom -->
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/jquery-ui.css" />
+    <!-- The link to the CSS that the grid needs -->
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/ui.jqgrid.css" />
+    <meta charset="utf-8" />
+    <title>jqTreeGrid - Load On Demand - Load all Rows at once collapsed</title>
+</head>
+<body>
+
+    <table id="tree"></table>
+    <div id="pager"></div>
+    <div id="selection">
+		price:<span id="price"></span><br/>
+		icon: <span id="uiicon"></span>
+	</div> 
+    <script type="text/javascript"> 
+	jQuery(document).ready(function($) {
+		jQuery('#tree').jqGrid({
+			"width":"180",
+			"hoverrows":false,
+			"viewrecords":false,
+			"gridview":true,
+			"url":"/static/data.json",
+			"editurl" : "clientArray",
+			"ExpandColumn":"name",
+			"height":"auto",
+			"sortname":"account_id",
+			"scrollrows":true,
+			"treeGrid":true,
+			"treedatatype":"json",
+			"treeGridModel":"adjacency",
+			"loadonce":true,
+			"rowNum":1000,
+			"treeReader":{
+				"parent_id_field":"parent_id",
+				"level_field":"level",
+				"leaf_field":"isLeaf",
+				"expanded_field":"expanded",
+				"loaded":"loaded",
+				"icon_field":"icon"
+			},
+			// set the tree icons
+				"treeIcons" : {
+					"plus": "ui-icon-circlesmall-plus",
+					"minus": "ui-icon-circlesmall-minus",
+					"leaf" : "ui-icon-document"
+				},
+			"datatype":"json",
+			"colModel":[
+				{
+					"name":"account_id",
+					"key":true,
+					"hidden":true
+				},{
+					"name":"name",
+					"label":"Name",
+					"width":170,
+					"editable":true
+				},{
+					"name":"acc_num",
+					"label":"Number",
+					"width":170,
+					
+					"editable":true
+				}
+			],
+			"onSelectRow" : function( rowid ) {
+					if(rowid) 
+					{
+						var ppdata = $('#tree').jqGrid('getNodeParent', rowid);
+						var rdata = $('#tree').jqGrid('getRowData', rowid);
+						//alert(rdata);
+						console.log(rdata);
+						if(rdata.isLeaf === 'true') {
+							$("#price").html(rdata);
+							$("#uiicon").empty().append("<span class='ui-icon'>好的</span>");
+						}
+					} 
+				},
+
+			"pager":"#pager"
+		});
+		// nable add
+		jQuery('#tree').jqGrid('navGrid','#pager',
+		{
+			"edit":true,
+			"add":true,
+			"del":true,
+			"search":false,
+			"refresh":true,
+			"view":false,
+			"excel":false,
+			"pdf":false,
+			"csv":false,
+			"columns":false
+		},
+		{"drag":true,"resize":true,"closeOnEscape":true,"dataheight":150},
+		{"drag":true,"resize":true,"closeOnEscape":true,"dataheight":150}
+		);
+		jQuery('#tree').jqGrid('bindKeys');
+	});
+    </script>
+
+    
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DataView</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="format-detection" content="telephone=no">
+    <style type="text/css">
+	body{
+	overflow:scroll;
+	overflow-x:hidden;
+		}
+	</style>
+    <link rel="stylesheet" href="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://demo.symgrid.com/assets/bootstrap-table.css">
+    <script src="http://demo.symgrid.com/assets/jquery.min.js"></script>
+    <script src="http://demo.symgrid.com/assets/bootstrap.min.js"></script>
+    <script src="http://demo.symgrid.com/assets/bootstrap-table.js"></script>
+    <script src="http://demo.symgrid.com/assets/bootstrap-table-export.js"></script>
+    <script src="http://demo.symgrid.com/assets/tableExport.js"></script>
+
+
+</head>
+<body>
+
+	<div id="his1" style="float:left;width: 100%">
+		<div id="toolbar">
+        <button id="button1" class="btn btn-default"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>刷新</button>
+        <button id="button2" class="btn btn-default" disabled="disabled"><span class="glyphicon glyphicon-stop" aria-hidden="true"></span>停止</button>
+     	</div>
+		<table id="rtdatatable"
+               data-toggle="table"
+               data-show-export="true"
+               data-pagination="true"
+               data-click-to-select="true"
+               data-toolbar="#toolbar"
+               data-page-size="25"
+               data-url="http://192.168.163.1/mqtt/">
+			<thead>
+				<tr>
+					<th data-field="state" data-checkbox="true">
+					</th>
+					<th data-field="ad">
+						数据地址
+					</th>
+					<th data-field="t">
+						时间
+					</th>
+					<th data-field="v">
+						数值
+					</th>
+				</tr>
+			</thead>
+		</table>
+	</div>
+
+<script>
+	var click = 0;
+	var host = window.location.host;
+	var ura = "http://192.168.163.1/mqtt/";
+    var $table = $('#rtdatatable'),
+        $button1 = $('#button1');
+        $button2 = $('#button2');
+        
+            $(function () {
+    		});
+        
+        function getrtdata()
+        {
+        	$.get(ura, function(data){
+        	var  rtdata = JSON.parse(data);
+       		$table.bootstrapTable('load', rtdata);
+            });
+        }
+        
+        
+        $(function () 
+        {
+        
+        $button1.click(function () 
+        {
+        if (click!=0)
+		{
+		int = window.clearInterval(click);
+		}
+        getrtdata();
+        int = setInterval("getrtdata()",1000);
+        click = int;
+        $button2.removeAttr("disabled");
+		$button1.attr("disabled","disabled");
+		
+        });
+    	});
+    	
+    	$(function () 
+        {
+        $button2.click(function () 
+        {
+        if (click!=0)
+		{
+		
+		int = window.clearInterval(click);
+		click = int;
+		$button1.removeAttr("disabled");
+		$button2.attr("disabled","disabled");
+		}
+        });
+        });
+
+</script>
+
+</body>
+</html>

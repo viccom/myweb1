@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+
+<html lang="cn">
+<head>
+    <!-- The jQuery library is a prerequisite for all jqSuite products -->
+    <script type="text/ecmascript" src="/static/js/jquery.min.js"></script> 
+    <!-- We support more than 40 localizations -->
+    <script type="text/ecmascript" src="/static/i18n/grid.locale-cn.js"></script>
+    <!-- This is the Javascript file of jqGrid -->   
+    <script type="text/ecmascript" src="/static/js/jquery.jqGrid.min.js"></script>
+    
+    <script src="/static/js/bootstrap.min.js"></script>
+	<script src="/static/js/jquery.json.min.js"></script>
+    <!-- A link to a Boostrap  and jqGrid Bootstrap CSS siles-->
+	<link rel="stylesheet" href="/static/css/bootstrap.min.css"> 
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/ui.jqgrid-bootstrap.css" />
+	<script>
+		$.jgrid.defaults.width = 1080;
+		$.jgrid.defaults.responsive = true;
+		$.jgrid.defaults.styleUI = 'Bootstrap';
+	</script>
+
+    <meta charset="utf-8" />
+    <title>jqGrid Loading Data - Inline Editing with on Row Click</title>
+</head>
+<body>
+
+
+<div style="margin-left:20px">
+    <table id="jqGrid"></table>
+    <div id="jqGridPager"></div>
+    <button id="loaddata" class="btn btn-default"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>刷新</button>
+    <button id="stopload" class="btn btn-default" disabled="disabled"><span class="glyphicon glyphicon-stop" aria-hidden="true"></span>停止</button>
+
+</div>
+    <script type="text/javascript">
+    	var click = 0;
+    	
+        function startEdit() {
+            var grid = $("#jqGrid");
+            var ids = grid.jqGrid('getDataIDs');
+
+            for (var i = 0; i < ids.length; i++) {
+                grid.jqGrid('editRow',ids[i]);
+            }
+        };
+
+        function saveRows() {
+            var grid = $("#jqGrid");
+            var ids = grid.jqGrid('getDataIDs');
+
+            for (var i = 0; i < ids.length; i++) {
+                grid.jqGrid('saveRow', ids[i]);
+            }
+        }
+        $(document).ready(function () {
+            $("#jqGrid").jqGrid({
+                url: '/mbrtdata/',
+                editurl: 'clientArray',
+                datatype: "json",
+                colModel: [
+                    {label: "测点名称",name: 'tagname',width: 80,editable: false},
+                    {label: "测点描述",name: 'tagdesc',width: 160,editable: false},
+                    {label : "时间",name: 'time',width: 160,editable: false},
+                    {label : "数值",name: 'value',width: 80,editable: false},
+                ],
+				sortname: 'tagname',
+				sortable:true,
+				sortorder : 'asc',
+				loadonce: false,
+				viewrecords: true,
+                height: 'auto',
+                multiselect: true,
+                loadui: "Disable",//禁止加载数据时的提示框
+                pager: "#jqGridPager"
+            });
+            $("#jqGrid").closest(".ui-jqgrid-bdiv").css({ 'overflow-x' : 'hidden' });
+            $('#jqGrid').navGrid('#jqGridPager',
+                // the buttons to appear on the toolbar of the grid
+                { add: false, del: false, edit: false, search: true, refresh: true, view: true, position: "left", cloneToTop: false },
+                // options for the Edit Dialog
+                {
+                    editCaption: "The Edit Dialog",
+                    recreateForm: true,
+					checkOnUpdate : true,
+					checkOnSubmit : true,
+                    closeAfterEdit: true,
+                    errorTextFormat: function (data) {
+                        return 'Error: ' + data.responseText
+                    }
+                },
+                // options for the Add Dialog
+                {
+                    closeAfterAdd: true,
+                    recreateForm: true,
+                    errorTextFormat: function (data) {
+                        return 'Error: ' + data.responseText
+                    }
+                },
+                // options for the Delete Dailog
+                {
+                    errorTextFormat: function (data) {
+                        return 'Error: ' + data.responseText
+                    }
+                });
+                $.jgrid.saveState("jqGrid");
+        });
+        
+
+
+        function getrtdata()
+        {
+        $("#jqGrid").trigger("reloadGrid", { fromServer: true,});
+        }
+
+
+        	$("#loaddata").click(function(){
+        if (click!=0)
+		{
+		int = window.clearInterval(click);
+		}
+        getrtdata();
+        int = setInterval("getrtdata()",2000);
+        click = int;
+        $("#stopload").removeAttr("disabled");
+		$("#loaddata").attr("disabled","disabled");
+		
+        });
+
+            
+        $("#stopload").click(function(){
+        if (click!=0)
+		{
+		int = window.clearInterval(click);
+		click = int;
+		$("#loaddata").removeAttr("disabled");
+		$("#stopload").attr("disabled","disabled");
+		}
+        });
+
+    </script>
+</body>
+</html>

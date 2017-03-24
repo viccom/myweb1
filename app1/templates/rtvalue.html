@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html lang="cn">
+<head>
+    <!-- The jQuery library is a prerequisite for all jqSuite products -->
+    <script type="text/ecmascript" src="/static/js/jquery.min.js"></script> 
+    <!-- We support more than 40 localizations -->
+    <script type="text/ecmascript" src="/static/i18n/grid.locale-cn.js"></script>
+    <!-- This is the Javascript file of jqGrid -->   
+    <script type="text/ecmascript" src="/static/js/jquery.jqGrid.min.js"></script>
+    
+    <script src="/static/js/bootstrap.min.js"></script>
+	<script src="/static/js/jquery.json.min.js"></script>
+    <!-- A link to a Boostrap  and jqGrid Bootstrap CSS siles-->
+	<link rel="stylesheet" href="/static/css/bootstrap.min.css"> 
+    <link rel="stylesheet" type="text/css" media="screen" href="/static/css/ui.jqgrid-bootstrap.css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>测试rtvalue</title>
+</head>
+<body>
+
+<table class="table table-hover">
+	<caption>网关序号：{{ boxsn }}</caption>
+	<thead>
+		<tr>
+			<th>名称</th>
+			<th>描述</th>
+			<th>时间</th>
+			<th>数值</th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for rtvalue in rtvalues %}
+		<tr>
+			<td>{{ rtvalue.nm }}</td>
+			<td>{{ rtvalue.ds }}</td>
+			<td>{{ rtvalue.ts }}</td>
+			<td>{{ rtvalue.v }}</td>
+    	</tr>
+    {% endfor %}
+	</tbody>
+</table>
+</body>
+</html>
